@@ -21,7 +21,38 @@ const PizzaOrder = () => {
     name: "",
   });
 
-  const validate = (event) => {
+  const [orderPizza, setOrderPizza] = useState({
+    name: "",
+    size: "Small",
+    pepperoni: false,
+    olives: false,
+    bacon: false,
+    pepperoncini: false,
+    special: ""
+  })
+
+  const inputChange = (event) => {
+    event.persist()
+    let value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+    setOrderPizza({
+      ...orderPizza,
+      [event.target.name]: value
+    });
+  }
+
+  const formSubmit = (event) => {
+    event.preventDefault();
+    setAllMyData(orderPizza)
+    console.log(allMyData)
+  };
+
+  const handleName = (event) => {
+    event.persist()
+    setOrderPizza({
+      ...orderPizza,
+      [event.target.name]: event.target.value
+    });
+
     yup.reach(formSchema, event.target.name)
     .validate(event.target.value)
     .then( valid => {
@@ -37,33 +68,7 @@ const PizzaOrder = () => {
         [event.target.name]: err.errors[0]
       })
     })
-  };
-
-  const [orderPizza, setOrderPizza] = useState({
-    name: "",
-    size: "Small",
-    pepperoni: false,
-    olives: false,
-    bacon: false,
-    pepperoncini: false,
-    special: ""
-  })
-
-  const inputChange = (event) => {
-    event.persist()
-    validate(event);
-    let value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
-    setOrderPizza({
-      ...orderPizza,
-      [event.target.name]: value
-    });
   }
-
-  const formSubmit = (event) => {
-    event.preventDefault();
-    setAllMyData(orderPizza)
-    console.log(allMyData)
-  };
 
   return (
     <div className="options">
@@ -76,7 +81,7 @@ const PizzaOrder = () => {
             type="text" 
             placeholder="Enter Name" 
             value={orderPizza.name}
-            onChange={inputChange}
+            onChange={handleName}
           />
           {errors.name.length > 0 ? <p className="error">{errors.name}</p> : null}
         </label>
